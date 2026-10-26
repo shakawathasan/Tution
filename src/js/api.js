@@ -1,3 +1,21 @@
+// Robust API wrapper snippet to prevent infinite loaders
+export async function safeApiCall(endpoint, fallbackData = []) {
+  try {
+    const response = await fetch(endpoint, {
+      headers: { 'Content-Type': 'application/json' },
+      signal: AbortSignal.timeout(5000) // 5 second timeout to prevent hanging loaders
+    });
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    return await response.json();
+  } catch (error) {
+    console.warn(`API call to ${endpoint} failed, utilizing local state/fallback:`, error);
+    // Check localStorage cache or fallback
+    const cached = localStorage.getItem(`shikho_${endpoint}`);
+    if (cached) return JSON.parse(cached);
+    return fallbackData;
+  }
+}
+
 /**
  * API Client for ShikhoTuition BD
  */
