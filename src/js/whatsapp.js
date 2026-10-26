@@ -1,3 +1,19 @@
+export function generateWhatsAppLink(phone, message) {
+  if (!phone) return '#';
+  // Clean phone number: remove spaces, dashes, ensure 88 prefix for Bangladesh
+  let cleanPhone = phone.replace(/\D/g, '');
+  if (cleanPhone.length === 11 && cleanPhone.startsWith('01')) {
+    cleanPhone = '88' + cleanPhone;
+  }
+  const encodedMessage = encodeURIComponent(message);
+  return `https://wa.me/${cleanPhone}?text=${encodedMessage}`;
+}
+
+export function getFeeReminderMessage(parentName, studentName, month, amount) {
+  return `Hello, ${parentName}. This is a friendly reminder that the tuition fee of ${studentName} for ${month} is still pending. Outstanding amount: ৳${amount}. Please let us know once payment is completed. Thank you.`;
+}
+
+
 /**
  * Client-side WhatsApp click-to-chat utilities & bulk reminder runner
  */
